@@ -15,7 +15,7 @@ def fetch_total_supply(api_key):
         raise Exception(f"Failed to fetch total supply: {response.text}")
 
 def update_json_file(total_supply):
-    data = {'totalsupply': total_supply}
+    data = {'total_supply': total_supply}
     with open('total_supply.json', 'w') as json_file:
         json.dump(data, json_file)
 
