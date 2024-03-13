@@ -1,6 +1,7 @@
 import json
 import os
 import requests
+from decimal import Decimal
 
 def fetch_total_supply(api_key):
     CONTRACT_ADDRESS = "0x7d89e05c0b93b24b5cb23a073e60d008fed1acf9"
@@ -9,13 +10,13 @@ def fetch_total_supply(api_key):
     response = requests.get(total_supply_url)
     if response.status_code == 200:
         data = response.json()
-        total_supply = data['result']
+        total_supply = Decimal(data['result'])
         return total_supply
     else:
         raise Exception(f"Failed to fetch total supply: {response.text}")
 
 def update_json_file(total_supply):
-    data = {'total_supply': total_supply}
+    data = {'total_supply': str(total_supply)}  # Convert Decimal to string for JSON serialization
     with open('total_supply.json', 'w') as json_file:
         json.dump(data, json_file)
 
