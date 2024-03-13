@@ -1,4 +1,3 @@
-import json
 import os
 import requests
 from decimal import Decimal
@@ -11,14 +10,15 @@ def fetch_total_supply(api_key):
     if response.status_code == 200:
         data = response.json()
         total_supply = Decimal(data['result'])
-        return total_supply
+        # Adjust total supply for 18 decimal places
+        adjusted_supply = total_supply / Decimal('1e18')
+        return adjusted_supply
     else:
         raise Exception(f"Failed to fetch total supply: {response.text}")
 
-def update_json_file(total_supply):
-    data = {'total_supply': str(total_supply)}  # Convert Decimal to string for JSON serialization
-    with open('total_supply.json', 'w') as json_file:
-        json.dump(data, json_file)
+def write_value_to_file(total_supply):
+    with open('total_supply.txt', 'w') as file:
+        file.write(f"{total_supply}")
 
 if __name__ == "__main__":
     API_KEY = os.getenv('API_KEY')
@@ -26,4 +26,4 @@ if __name__ == "__main__":
         raise ValueError("API_KEY environment variable is not set.")
     
     total_supply = fetch_total_supply(API_KEY)
-    update_json_file(total_supply)
+    write_value_to_file(total_supply)

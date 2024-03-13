@@ -1,4 +1,3 @@
-import json
 import os
 import requests
 from decimal import Decimal
@@ -20,12 +19,14 @@ def calculate_circulating_supply(api_key):
         balance = Decimal(balance_response)
         circulating_supply -= balance
     
-    return circulating_supply
+    # Adjust circulating supply for 18 decimal places
+    adjusted_supply = circulating_supply / Decimal('1e18')
+    
+    return adjusted_supply
 
-def update_json_file(circulating_supply):
-    data = {'circulating_supply': str(circulating_supply)}  # Convert Decimal to string for JSON serialization
-    with open('circulating_supply.json', 'w') as json_file:
-        json.dump(data, json_file)
+def write_value_to_file(circulating_supply):
+    with open('circulating_supply.txt', 'w') as file:
+        file.write(f"{circulating_supply}")
 
 if __name__ == "__main__":
     API_KEY = os.getenv('API_KEY')
@@ -33,4 +34,4 @@ if __name__ == "__main__":
         raise ValueError("API_KEY environment variable is not set.")
     
     circulating_supply = calculate_circulating_supply(API_KEY)
-    update_json_file(circulating_supply)
+    write_value_to_file(circulating_supply)
